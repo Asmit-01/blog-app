@@ -12,8 +12,8 @@ export default function IndexPage(props) {
     }, []);
     return (
         <>
-            {posts.length > 0 && posts.map(post => (
-                <Post {...post} />
+            {posts.length > 0 && posts.map((post,idx) => (
+                <Post {...post} key={idx}/>
             ))}
         </>
     );
