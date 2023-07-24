@@ -7,14 +7,17 @@ export default function Header(props) {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch(props.deploy+'profile', {
-            credentials: 'include',
-        }).then(response => {
-            response.json().then(userInfo => {
-                setUserInfo(userInfo);
+   useEffect(() => {
+        async function getData() {
+            const resp = await fetch(props.deploy + 'profile', {
+                credentials: 'include',
             });
-        });
+
+            if (!resp.error)
+                setUserInfo(resp);
+        }
+        getData();
+
     }, []);
 
     function logout() {
