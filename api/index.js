@@ -18,7 +18,7 @@ const secret = 'asdfe45we45w345wegw345werjktjwertkj';
 
 app.use(cors({ origin: true, credentials: true }));
 app.use((req, res, next) => {
-          res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+          res.header('Access-Control-Allow-Origin', 'https://fascinating-gingersnap-68305e.netlify.app');
           next();
         });
 app.use(express.json());
