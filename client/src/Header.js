@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header(props) {
     const { setUserInfo, userInfo } = useContext(UserContext);
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:4000/profile', {
+        fetch(props.deploy+'profile', {
             credentials: 'include',
         }).then(response => {
             response.json().then(userInfo => {
@@ -18,7 +18,7 @@ export default function Header() {
     }, []);
 
     function logout() {
-        fetch('http://localhost:4000/logout', {
+        fetch(props.deploy+'logout', {
             credentials: 'include',
             method: 'POST',
         });
