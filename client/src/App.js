@@ -18,7 +18,7 @@ function App() {
   return (
     <UserContextProvider>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<Layout deploy={deploy}/>}>
           <Route index element={<IndexPage deploy={deploy} />} />
           <Route path="/login" element={<LoginPage deploy={deploy} />} />
           <Route path="/register" element={<RegisterPage deploy={deploy} />} />
