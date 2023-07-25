@@ -12,13 +12,13 @@ import PostPage from "./pages/PostPage";
 import EditPost from "./pages/EditPost";
 
 function App() {
-  //const deploy = 'http://localhost:4000/';
-  const deploy = 'https://blog-app-backend-fqu2.onrender.com/';
+  const deploy = 'http://localhost:4000/';
+  //const deploy = 'https://blog-app-backend-fqu2.onrender.com/';
 
   return (
     <UserContextProvider>
       <Routes>
-        <Route path="/" element={<Layout deploy={deploy}/>}>
+        <Route path="/" element={<Layout deploy={deploy} />}>
           <Route index element={<IndexPage deploy={deploy} />} />
           <Route path="/login" element={<LoginPage deploy={deploy} />} />
           <Route path="/register" element={<RegisterPage deploy={deploy} />} />
