@@ -13,7 +13,7 @@ import EditPost from "./pages/EditPost";
 
 function App() {
   //const deploy = 'http://localhost:4000/';
-  const deploy = 'https://blog-app-qv8x.onrender.com';
+  const deploy = 'https://blog-app-qv8x.onrender.com/';
 
   return (
     <UserContextProvider>
