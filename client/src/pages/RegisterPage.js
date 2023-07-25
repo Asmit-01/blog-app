@@ -1,10 +1,18 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom"
 
 export default function RegisterPage(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+
     async function register(ev) {
         ev.preventDefault();
+        if (username == null || password == null) {
+            alert('Invalid input')
+            navigate('/register')
+            return;
+        }
         const response = await fetch(props.deploy + 'register', {
             method: 'POST',
             body: JSON.stringify({ username, password }),
