@@ -7,8 +7,15 @@ export default function LoginPage(props) {
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
     const { setUserInfo } = useContext(UserContext);
+    const navigate = useNavigate();
+
     async function login(ev) {
         ev.preventDefault();
+        if (username == null || password == null) {
+            alert('Invalid input');
+            navigate('/login')
+            return;
+        }
         const response = await fetch(props.deploy + 'login', {
             method: 'POST',
             body: JSON.stringify({ username, password }),
@@ -26,7 +33,7 @@ export default function LoginPage(props) {
     }
 
     if (redirect) {
-        return <Navigate to={'/'} />
+        navigate('/')
     }
     return (
         <form className="login" onSubmit={login}>
