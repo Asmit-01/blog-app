@@ -11,6 +11,7 @@ const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const dotenv = require('dotenv')
+const path = require('path')
 dotenv.config()
 
 const salt = bcrypt.genSaltSync(10);
@@ -140,6 +141,14 @@ app.get('/post/:id', async (req, res) => {
     const postDoc = await Post.findById(id).populate('author', ['username']);
     res.json(postDoc);
 })
+
+
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+});
+
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => { console.log(`server Listen at ${port}`) });
