@@ -12,7 +12,7 @@ const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const dotenv = require('dotenv')
 const path = require('path')
-dotenv.config()
+dotenv.config({ path: '.env' })
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
