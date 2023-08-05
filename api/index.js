@@ -12,7 +12,7 @@ const multer = require('multer');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const path = require('path');
-dotenv.config({ path: '../.env' })
+dotenv.config({ path: '.env' })
 // const { cloudinary } = require('./cloudinary/index.js')
 const { storage } = require('./cloudinary/index.js')
 const upload = multer({ storage })
