@@ -13,7 +13,7 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const path = require('path');
 dotenv.config({ path: '.env' })
-const { cloudinary } = require('./cloudinary/index.js')
+// const { cloudinary } = require('./cloudinary/index.js')
 const { storage } = require('./cloudinary/index.js')
 const upload = multer({ storage })
 
@@ -46,6 +46,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+    if (!req.body) return response.json({ 'error': 'error' });
     const { username, password } = req.body;
     const userDoc = await User.findOne({ username });
     const passOk = bcrypt.compareSync(password, userDoc.password);
