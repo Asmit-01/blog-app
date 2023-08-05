@@ -35,7 +35,7 @@ export default function PostPage(props) {
                 </div>
             )}
             <div className="image">
-                <img src={props.deploy + `${postInfo.cover}`} alt="" />
+                <img src={postInfo.cover.url} alt="" />
             </div>
             <div className="content" dangerouslySetInnerHTML={{ __html: postInfo.content }} />
         </div>

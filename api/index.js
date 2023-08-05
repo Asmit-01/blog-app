@@ -8,11 +8,14 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
-const uploadMiddleware = multer({ dest: 'uploads/' });
+
 const fs = require('fs');
 const dotenv = require('dotenv');
-const path = require('path')
+const path = require('path');
 dotenv.config({ path: '.env' })
+const { cloudinary } = require('./cloudinary/index.js')
+const { storage } = require('./cloudinary/index.js')
+const upload = multer({ storage })
 
 const salt = bcrypt.genSaltSync(10);
 const secret = 'asdfe45we45w345wegw345werjktjwertkj';
@@ -21,9 +24,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
 
-// console.log(process.env.MONGO_URL)
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     console.log("database connected")
 }).catch((err) => {
@@ -74,15 +75,11 @@ app.post('/logout', (req, res) => {
     res.cookie('token', 'null').json('ok');
 });
 
-app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
-    const { originalname, path } = req.file;
-    console.log(req.file);
-    const parts = originalname.split('.');
-    const ext = parts[parts.length - 1];
-    const newPath = path + '.' + ext;
-    fs.renameSync(path, newPath);
-
-    console.log(path, newPath);
+app.post('/post', upload.single('file'), async (req, res) => {
+    const image = {
+        url: req.file.path,
+        filename: req.file.filename
+    }
 
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -92,23 +89,16 @@ app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
             title,
             summary,
             content,
-            cover: newPath,
+            cover: { ...image },
             author: info.id,
         });
+        //console.log(postDoc);
         res.json(postDoc);
     });
 
 });
 
-app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
-    let newPath = null;
-    if (req.file) {
-        const { originalname, path } = req.file;
-        const parts = originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path + '.' + ext;
-        fs.renameSync(path, newPath);
-    }
+app.put('/post', upload.single('file'), async (req, res) => {
 
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
@@ -120,7 +110,16 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
             return res.status(400).json('you are not the author');
         }
 
-        var newvalues = { $set: { title, summary, content, cover: newPath ? newPath : postDoc.cover } };
+        let image = postDoc.cover;
+        if (req.file) {
+            image = {
+                url: req.file.path,
+                filename: req.file.filename
+            }
+        }
+
+
+        var newvalues = { $set: { title, summary, content, cover: image } };
         await Post.updateOne({ title }, newvalues);
 
         res.json(postDoc);
@@ -129,17 +128,19 @@ app.put('/post', uploadMiddleware.single('file'), async (req, res) => {
 });
 
 app.get('/post', async (req, res) => {
-    res.json(
-        await Post.find()
-            .populate('author', ['username'])
-            .sort({ createdAt: -1 })
-            .limit(20)
-    );
+    const arr = await Post.find()
+        .populate('author', ['username'])
+        .sort({ createdAt: -1 })
+        .limit(20);
+
+    //console.log(arr);
+    res.json(arr)
 });
 
 app.get('/post/:id', async (req, res) => {
     const { id } = req.params;
     const postDoc = await Post.findById(id).populate('author', ['username']);
+    //console.log(postDoc);
     res.json(postDoc);
 })
 
