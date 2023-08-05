@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const path = require('path')
 dotenv.config({ path: '.env' })
 
@@ -23,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
+// console.log(process.env.MONGO_URL)
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     console.log("database connected")
 }).catch((err) => {
@@ -75,10 +76,13 @@ app.post('/logout', (req, res) => {
 
 app.post('/post', uploadMiddleware.single('file'), async (req, res) => {
     const { originalname, path } = req.file;
+    console.log(req.file);
     const parts = originalname.split('.');
     const ext = parts[parts.length - 1];
     const newPath = path + '.' + ext;
     fs.renameSync(path, newPath);
+
+    console.log(path, newPath);
 
     const { token } = req.cookies;
     jwt.verify(token, secret, {}, async (err, info) => {
